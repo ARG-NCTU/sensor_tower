@@ -1,0 +1,12 @@
+<launch>
+   <arg name="robot_name_1" default="boat1" />
+   <arg name="urdf" default="$(find sensor_tower_description)/urdf/sensor_tower.urdf" />
+      <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg urdf) robot_name:=$(arg robot_name_1)" />
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  <!--add jackal-->
+  <node name="jackal_base_to_sensor_tower_base" pkg="tf2_ros" type="static_transform_publisher" args="0 0 0.5955 0 0 0 base_link sensor_tower_base_link"/>
+  <node
+    name="robot_state_publisher"
+    pkg="robot_state_publisher"
+    type="robot_state_publisher" />
+</launch>

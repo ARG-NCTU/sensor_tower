@@ -161,6 +161,9 @@ target_link_libraries(simple_tracking_node ${catkin_LIBRARIES})
 add_executable(pc_tolaser src/pc_tolaser.cpp)
 target_link_libraries(pc_tolaser ${catkin_LIBRARIES})
 
+### add mmwave_d435 ###
+add_executable(simple_tracking_half src/simple_tracking_half.cpp)
+target_link_libraries(simple_tracking_half ${catkin_LIBRARIES})
 
 #############
 ## Install ##

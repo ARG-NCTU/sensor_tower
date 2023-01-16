@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<launch>
+  <arg name="veh" default="husky2" />
+
+  <group ns="$(arg veh)">
+
+    <!-- filter -->
+    <node name="mmwave_filter_right_back" pkg="mmwave_detection" type="simple_tracking_half" output="screen" required="true">
+      <!-- remap subscriber-->
+      <remap from="mmwave_mapping" to ="radar_2/ti_mmwave/ti_mmwave/radar_scan_pcl"/>
+      <!-- remap publisher-->
+      <remap from="filtered_pc" to ="filtered_pc_mmwave2"/>
+      <param name="frame" type="str" value="mmwave_right_back_link"/>
+    </node>
+
+    <!-- filter -->
+    <node name="mmwave_filter_left_back" pkg="mmwave_detection" type="simple_tracking_half" output="screen" required="true">
+      <!-- remap subscriber-->
+      <remap from="mmwave_mapping" to ="radar_3/ti_mmwave/ti_mmwave/radar_scan_pcl"/>
+      <!-- remap publisher-->
+      <remap from="filtered_pc" to ="filtered_pc_mmwave3"/>
+      <param name="frame" type="str" value="mmwave_left_back_link"/>
+    </node>
+
+    <!-- mapping -->
+    <node name="mmwave_d435_mapping" pkg="ti_mmwave_rospkg" type="mmwave_d435_mapping" output="screen" required="true">
+      <remap from="mmwave_mapping" to="filtered_pc"/>
+    </node>
+
+  </group>
+
+
+</launch>

@@ -55,7 +55,7 @@
 
 using namespace std;
 using namespace pcl;
-
+std::string frame;
 //  _   _                _           
 // | | | |              | |          
 // | |_| | ___  __ _  __| | ___ _ __ 
@@ -74,7 +74,7 @@ private:
     // ROS
     ros::NodeHandle nh_;
     ros::Publisher pub_filtered_pc;
-    ros::Publisher pub_marker_array_;
+    //ros::Publisher pub_marker_array_;
     ros::Subscriber sub_mmwave_pc;
 
     // PCL
@@ -124,7 +124,7 @@ void SimpleTrackingNode::mmwave_data_cb(const sensor_msgs::PointCloud2ConstPtr& 
 
     source_clouds.push_back(*cloud);
     cnt_pc_++;
-    cout << source_clouds.size() << endl;
+    //cout << source_clouds.size() << endl;
     if(source_clouds.size() == 5){
         vector<PointCloud<PointXYZ>>::iterator it;
         for(it = source_clouds.begin(); it != source_clouds.end(); it++)
@@ -166,14 +166,14 @@ void SimpleTrackingNode::mmwave_data_cb(const sensor_msgs::PointCloud2ConstPtr& 
         outrem.filter(*cloud_filtered);
 
         // cloud_filtered->header.frame_id = in_cloud_msg->header.frame_id;
-        cloud_filtered->header.frame_id = "base_link";
+        
+        cloud_filtered->header.frame_id = frame;
         pcl_conversions::toPCL(ros::Time::now(), cloud_filtered->header.stamp);
         
-        cout << "fuck" << endl;
         pub_filtered_pc.publish(cloud_filtered);
 
-        
-        cout << cloud_filtered->points.size() << endl;
+        //cout <<  cloud_filtered->header.frame_id << endl;
+        //cout << cloud_filtered->points.size() << endl;
          if(cloud_filtered->points.size() > 1){
              // ROS_WARN_STREAM("There is no point after filtering on mmwave raw data. Skip this callback.");
              // return;
@@ -203,40 +203,10 @@ void SimpleTrackingNode::mmwave_data_cb(const sensor_msgs::PointCloud2ConstPtr& 
 
                  Eigen::Vector4f centroid;
                  pcl::compute3DCentroid(*cloud_cluster, centroid);
-
-                 // Visualization
-                 visualization_msgs::MarkerPtr marker(new visualization_msgs::Marker);
-                 marker->header.frame_id = "mmwave_left_link";
-                 marker->header.frame_id = in_cloud_msg->header.frame_id;
-                 marker->header.stamp = ros::Time::now();
-                 marker->type = fixed_shape_;
-                 marker->id = j;
-                 marker->action = visualization_msgs::Marker::ADD;
-                 marker->pose.position.x = centroid[0];
-                 marker->pose.position.y = centroid[1];
-                 marker->pose.position.z = centroid[2];
-                 marker->pose.orientation.x = 0.0;
-                 marker->pose.orientation.y = 0.0;
-                 marker->pose.orientation.z = 0.0;
-                 marker->pose.orientation.w = 1.0;
-                 // Set the color -- be sure to set alpha to something non-zero!
-                 marker->color.r = 0.4f;
-                 marker->color.g = 0.4f;
-                 marker->color.b = 1.0f;
-                 marker->color.a = 0.5f;
-                 // Set the scale of the marker -- 1x1x1 here means 1m on a side
-                 marker->scale.x = marker->scale.y = marker->scale.z = 0.8;
-                 marker->lifetime = ros::Duration(0.2);
-
-                 marker_array_.markers.push_back(*marker);
-                 j++;
-             }
-
-          // cout << j << ", " << marker_array_.markers.size() <<  endl;
-          //pub_marker_array_.publish(marker_array_);          
+             }       
         }
         scene_cloud_.reset(new PointCloud<PointXYZ>());
-        cout << "fuck 2" << endl;
+    
         source_clouds.erase(source_clouds.begin());
     }
     
@@ -244,8 +214,10 @@ void SimpleTrackingNode::mmwave_data_cb(const sensor_msgs::PointCloud2ConstPtr& 
 }
 
 int main(int argc, char** argv){
-    ros::init(argc, argv, "simple_tracking_node");
+    ros::init(argc, argv, "simple_tracking_half");
     ros::NodeHandle nh; // create a node handle; need to pass this to the class constructor
+    ros::NodeHandle nh_local("~"); // create a node handle; need to pass this to the class constructor
+    nh_local.getParam("frame", frame);
     SimpleTrackingNode node(&nh);
     ros::spin();
     return 0;

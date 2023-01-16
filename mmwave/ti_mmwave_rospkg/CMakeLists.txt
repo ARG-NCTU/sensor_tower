@@ -240,6 +240,10 @@ add_dependencies(mmWaveQuickConfig ${catkin_EXPORTED_TARGETS} mmwave)
 add_executable(mmwave_mapping src/mmwave_mapping.h src/mmwave_mapping.cpp)
 target_link_libraries(mmwave_mapping ${catkin_LIBRARIES})
 
+############ add mmwave_d435_mapping ############
+add_executable(mmwave_d435_mapping src/mmwave_d435_mapping.h src/mmwave_d435_mapping.cpp)
+target_link_libraries(mmwave_d435_mapping ${catkin_LIBRARIES})
+
 #############
 ## Testing ##
 #############
