@@ -113,4 +113,8 @@ class MMmapping{
 	Publisher marker_pub;
 	uint32_t shape;
 	visualization_msgs::Marker marker;
+
+	bool mm_wave1_receive = false;
+	bool mm_wave2_receive = false;
+	bool d435_receive = false;
 };

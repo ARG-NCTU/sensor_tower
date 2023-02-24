@@ -28,6 +28,7 @@ MMmapping::MMmapping(){
 	trans2 = get_transfrom("mmwave_right_back_link");
 	trans3 = get_transfrom("mmwave_left_back_link");
 	trans4 = get_transfrom("camera_color_optical_frame");
+
     pc_map = nh.advertise<sensor_msgs::PointCloud2> ("mmwave_mapping", 10);
 	//pc_sub0 = nh.subscribe("radar_0/ti_mmwave/ti_mmwave/radar_scan_pcl", 1, &MMmapping::pc0_callback, this);
 	//pc_sub1 = nh.subscribe("radar_1/ti_mmwave/ti_mmwave/radar_scan_pcl", 1, &MMmapping::pc1_callback, this);
@@ -62,21 +63,30 @@ Eigen::Matrix4f MMmapping::get_transfrom(string link_name){
 
 void MMmapping::timerCallback(const ros::TimerEvent& event)
 {
-	//*map += *pc_input0;
-	//*map += *pc_input1;
-	*map += *pc_input2;
-	*map += *pc_input3;
-	*map += *pc_input4;
-	//cout <<map->size();
-	toROSMsg(*map, ros_cloud_msg);
-	ros_cloud_msg.header.frame_id = "base_link";
-	pc_map.publish(ros_cloud_msg);
-	map->points.clear();
-	//pc_input0->points.clear();
-	//pc_input1->points.clear();
-	pc_input2->points.clear();
-	pc_input3->points.clear();
-	pc_input4->points.clear();
+	if (d435_receive && mm_wave1_receive && mm_wave2_receive){
+		//*map += *pc_input0;
+		//*map += *pc_input1;
+		*map += *pc_input2;
+		*map += *pc_input3;
+		cout <<"\nmmwave~~~"<<map->size();
+		*map += *pc_input4;
+		cout <<"\nd435~~~"<<map->size();
+		cout<<"\n=====";
+		//cout <<map->size();
+		toROSMsg(*map, ros_cloud_msg);
+		ros_cloud_msg.header.frame_id = "base_link";
+		pc_map.publish(ros_cloud_msg);
+		map->points.clear();
+		//pc_input0->points.clear();
+		//pc_input1->points.clear();
+		pc_input2->points.clear();
+		pc_input3->points.clear();
+		pc_input4->points.clear();
+
+		mm_wave1_receive = false;
+		mm_wave2_receive = false; 
+		d435_receive = false;
+	}
 }
 /*
 void MMmapping::pc0_callback(const sensor_msgs::PointCloud2 msg){
@@ -99,12 +109,16 @@ void MMmapping::pc2_callback(const sensor_msgs::PointCloud2 msg){
 	fromROSMsg (msg, *pc_input2);
 
 	pcl::transformPointCloud (*pc_input2, *pc_input2, trans2);
+
+	mm_wave1_receive = true;
 }
 void MMmapping::pc3_callback(const sensor_msgs::PointCloud2 msg){
 
 	fromROSMsg (msg, *pc_input3);
 
 	pcl::transformPointCloud (*pc_input3, *pc_input3, trans3);
+
+	mm_wave2_receive = true;
 }
 
 void MMmapping::pc4_callback(const sensor_msgs::PointCloud2 msg){
@@ -112,6 +126,8 @@ void MMmapping::pc4_callback(const sensor_msgs::PointCloud2 msg){
 	fromROSMsg (msg, *pc_input4);
 
 	pcl::transformPointCloud (*pc_input4, *pc_input4, trans4);
+
+	d435_receive = true;
 }
 
 

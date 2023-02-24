@@ -169,7 +169,6 @@ void SimpleTrackingNode::mmwave_data_cb(const sensor_msgs::PointCloud2ConstPtr& 
         cloud_filtered->header.frame_id = "base_link";
         pcl_conversions::toPCL(ros::Time::now(), cloud_filtered->header.stamp);
         
-        cout << "fuck" << endl;
         pub_filtered_pc.publish(cloud_filtered);
 
         
@@ -236,7 +235,6 @@ void SimpleTrackingNode::mmwave_data_cb(const sensor_msgs::PointCloud2ConstPtr& 
           //pub_marker_array_.publish(marker_array_);          
         }
         scene_cloud_.reset(new PointCloud<PointXYZ>());
-        cout << "fuck 2" << endl;
         source_clouds.erase(source_clouds.begin());
     }
     
