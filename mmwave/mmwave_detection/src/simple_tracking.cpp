@@ -124,7 +124,7 @@ void SimpleTrackingNode::mmwave_data_cb(const sensor_msgs::PointCloud2ConstPtr& 
 
     source_clouds.push_back(*cloud);
     cnt_pc_++;
-    cout << source_clouds.size() << endl;
+    //cout << source_clouds.size() << endl;
     if(source_clouds.size() == 5){
         vector<PointCloud<PointXYZ>>::iterator it;
         for(it = source_clouds.begin(); it != source_clouds.end(); it++)
@@ -172,7 +172,7 @@ void SimpleTrackingNode::mmwave_data_cb(const sensor_msgs::PointCloud2ConstPtr& 
         pub_filtered_pc.publish(cloud_filtered);
 
         
-        cout << cloud_filtered->points.size() << endl;
+        //cout << cloud_filtered->points.size() << endl;
          if(cloud_filtered->points.size() > 1){
              // ROS_WARN_STREAM("There is no point after filtering on mmwave raw data. Skip this callback.");
              // return;
