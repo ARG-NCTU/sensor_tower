@@ -306,7 +306,7 @@
     type="fixed">
     <origin
       xyz="0.082901 -0.13406 0.14446"
-      rpy="0 0 -1.5708" />
+      rpy="0 0 -0.7854" />
     <parent
       link="sensor_tower_base_link" />
     <child
